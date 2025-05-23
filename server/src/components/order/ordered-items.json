@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_order_ordered_items",
+  "info": {
+    "displayName": "Ordered Items",
+    "icon": "chartPie"
+  },
+  "options": {},
+  "attributes": {
+    "product_title": {
+      "type": "string"
+    },
+    "product_thumbnail": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "integer"
+    },
+    "product_price": {
+      "type": "decimal"
+    },
+    "subtotal": {
+      "type": "decimal"
+    }
+  }
+}
