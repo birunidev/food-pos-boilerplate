@@ -1,9 +1,10 @@
 import { menus } from "src/constants/menu";
 import SideMenu from "../atoms/SideMenu";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 
 export default function SideMenus() {
-  const navigate = useNavigate();
+  const [, , removeToken] = useLocalStorage("FP__JWT_AUTH");
   const location = useLocation();
 
   let usedPathname = location?.pathname;
@@ -31,7 +32,8 @@ export default function SideMenus() {
         label="Logout"
         type="button"
         onClick={() => {
-          navigate("/auth/fp-login");
+          removeToken();
+          window.location.href = "/auth/fp-login";
         }}
         link="/logout"
       />

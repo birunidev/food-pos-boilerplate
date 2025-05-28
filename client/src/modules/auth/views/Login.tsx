@@ -16,6 +16,7 @@ export default function Login() {
             label="Your Mobile Phone"
             type="text"
             value=""
+            name="phone"
             onChange={() => {}}
             onBlur={() => {}}
             leftIcon={<img src="/assets/icons/ic-phone.svg" alt="" />}

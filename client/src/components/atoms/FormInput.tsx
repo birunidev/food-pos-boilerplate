@@ -12,6 +12,7 @@ interface FormInputProps {
   labelClassName?: string;
   inputClassName?: string;
   leftIcon?: React.ReactNode;
+  name: string;
 }
 
 export default function FormInput({
@@ -26,6 +27,7 @@ export default function FormInput({
   inputClassName,
   leftIcon,
   type = "text",
+  name,
 }: FormInputProps) {
   return (
     <label className={`form-control w-full ${wrapperClassName}`}>
@@ -43,6 +45,7 @@ export default function FormInput({
             value={value}
             onChange={onChange}
             onBlur={onBlur}
+            name={name}
             className={`textarea textarea-bordered w-full ${inputClassName}`}
           ></textarea>
         ) : (
@@ -51,6 +54,7 @@ export default function FormInput({
             value={value}
             onChange={onChange}
             onBlur={onBlur}
+            name={name}
             placeholder="Type here"
             className={`input input-bordered w-full ${
               leftIcon ? "pl-10" : ""
@@ -61,7 +65,7 @@ export default function FormInput({
 
       {error && touched && (
         <div className="label">
-          <span className="label-text-alt">{error}</span>
+          <span className="label-text-alt text-red-600">{error}</span>
         </div>
       )}
     </label>

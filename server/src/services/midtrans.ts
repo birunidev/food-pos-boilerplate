@@ -23,7 +23,10 @@ const core = new midtransClient.CoreApi({
 export const createMidtransTransaction = async (payload: MidtransPayload) => {
   const finalMidtransPayload = {
     ...payload,
-    payment_type: "gopay",
+    payment_type: "qris",
+    qris: {
+      acquirer: "airpay shopee",
+    },
   };
 
   try {

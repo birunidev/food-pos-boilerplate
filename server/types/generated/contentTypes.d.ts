@@ -544,10 +544,17 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     midtrans_transaction_id: Schema.Attribute.String;
     ordered_items: Schema.Attribute.Component<'order.ordered-items', true>;
     order_status: Schema.Attribute.Enumeration<
-      ['pending_payment', 'processing', 'ready_to_serve', 'completed']
+      [
+        'pending_payment',
+        'processing',
+        'ready_to_serve',
+        'completed',
+        'cancelled',
+      ]
     >;
     order_type: Schema.Attribute.Enumeration<['DINE_IN', 'TAKE_AWAY']>;
     order_notes: Schema.Attribute.Text;
+    qris_url: Schema.Attribute.Text;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

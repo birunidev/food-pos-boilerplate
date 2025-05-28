@@ -69,7 +69,8 @@
         "pending_payment",
         "processing",
         "ready_to_serve",
-        "completed"
+        "completed",
+        "cancelled"
       ]
     },
     "order_type": {
@@ -80,6 +81,9 @@
       ]
     },
     "order_notes": {
+      "type": "text"
+    },
+    "qris_url": {
       "type": "text"
     }
   }
