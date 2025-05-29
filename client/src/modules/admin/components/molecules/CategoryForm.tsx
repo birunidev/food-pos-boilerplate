@@ -1,29 +1,55 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import Box from "src/components/atoms/Box";
 import Button from "src/components/atoms/Button";
 import FormInput from "src/components/atoms/FormInput";
-import { useCreateCategory } from "src/config/mutators";
+import { useCreateCategory, useUpdateCategory } from "src/config/mutators";
+import { ICategory } from "src/types/category.types";
 import { getResponseErrorMessage } from "src/utils/api";
 import * as Yup from "yup";
 
-export default function CategoryForm() {
+export default function CategoryForm({
+  category,
+}: {
+  category: ICategory | null;
+}) {
+  const [, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
-  const { mutateAsync: performCreateCategory, error } = useCreateCategory();
+
+  const { mutateAsync: performCreateCategory, error: createdError } =
+    useCreateCategory();
+  const { mutateAsync: performUpdateCategory, error: updatedError } =
+    useUpdateCategory();
+
   const formik = useFormik({
     initialValues: {
-      name: "",
-      emoji: "",
-      slug: "",
+      name: category?.name ?? "",
+      emoji: category?.emoji ?? "",
+      slug: category?.slug ?? "",
     },
+    enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        await performCreateCategory({
-          name: values.name,
-          emoji: values.emoji,
-          slug: values.slug,
-        });
+        if (category) {
+          await performUpdateCategory({
+            id: category.documentId,
+            data: { ...values },
+          });
+          await queryClient.setQueryData(
+            ["/categories/" + category.documentId],
+            () => null
+          );
+          toast.success("Category updated successfully!");
+          setSearchParams({});
+        } else {
+          await performCreateCategory({ ...values });
+          toast.success("Category created successfully!");
+        }
+
+        formik.resetForm();
         queryClient.invalidateQueries({
           queryKey: ["/categories"],
         });
@@ -38,7 +64,6 @@ export default function CategoryForm() {
     }),
   });
 
-  console.log(formik.errors);
   // Category Name
   // category-name
   useEffect(() => {
@@ -50,6 +75,8 @@ export default function CategoryForm() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.name]);
+
+  const error = createdError || updatedError;
 
   return (
     <Box title="Manage Category Form">
