@@ -92,9 +92,13 @@ export const useCategory = (options?: QueryOptions<GetCategoryParams>) => {
  * ==========================
  */
 
+export const getProductsQueryKey = (params?: GetProductParams) => {
+  return ["/products", params];
+};
+
 export const useProducts = (options?: QueryOptions<GetProductParams>) => {
   return useQuery<PaginatedResources<IProduct>, AxiosError<ErrorResponse>>({
-    queryKey: ["/products", options?.params],
+    queryKey: getProductsQueryKey(options?.params),
     queryFn: () => getProducts(options?.params),
     ...options?.config,
   });

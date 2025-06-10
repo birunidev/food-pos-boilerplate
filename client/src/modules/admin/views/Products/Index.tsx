@@ -1,15 +1,13 @@
 import AdminTemplate from "../../components/templates/AdminTemplate";
 import AddMenuBtn from "../../components/atoms/AddMenuBtn";
 import ProductCards from "../../components/molecules/ProductCards";
-import { useProducts } from "src/config/queries";
 import Spinner from "src/components/atoms/Spinner";
+import Button from "src/components/atoms/Button";
+import { useProductsLiveData } from "./use-products-live-data";
 
 export default function ProductIndex() {
-  const { data: productsData, isLoading } = useProducts({
-    params: {
-      populate: "*",
-    },
-  });
+  const { productsData, isLoading, handleLoadMore, page } =
+    useProductsLiveData();
 
   return (
     <AdminTemplate
@@ -20,11 +18,20 @@ export default function ProductIndex() {
     >
       {isLoading && <Spinner />}
       {!isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {/* add button */}
-          <AddMenuBtn />
-          <ProductCards data={productsData?.data} />
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {/* add button */}
+            <AddMenuBtn />
+            <ProductCards data={productsData?.data} />
+          </div>
+          {productsData.meta.pagination.pageCount !== page && (
+            <div className="text-center">
+              <Button variant="warning" onClick={handleLoadMore}>
+                Load more
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </AdminTemplate>
   );

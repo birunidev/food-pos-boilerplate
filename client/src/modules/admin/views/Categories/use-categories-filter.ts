@@ -18,7 +18,7 @@ export const useCategoriesFilter = (): [
     page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
     pageSize: searchParams.get("pageSize")
       ? Number(searchParams.get("pageSize"))
-      : 2,
+      : 10,
   };
 
   const setFilter = (newFilter: Record<string, string | number>) => {

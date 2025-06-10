@@ -1,3 +1,5 @@
+import { ICategory } from "./category.types";
+
 export type ThumbnailFormat = {
   name: string;
   hash: string;
@@ -49,4 +51,5 @@ export type IProduct = {
   publishedAt: string;
   locale: null | string;
   thumbnail: Thumbnail;
+  category?: ICategory;
 };

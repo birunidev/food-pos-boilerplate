@@ -14,6 +14,14 @@ import {
   deleteCategory,
   updateCategory,
 } from "./services/category.service";
+import { IProduct, Thumbnail } from "src/types/product.types";
+import {
+  createProduct,
+  deleteProduct,
+  ProductRequest,
+  updateProduct,
+} from "./services/product.service";
+import { uploadFile } from "./services/file.service";
 
 /**
  * ==========================
@@ -28,6 +36,17 @@ export const usePerformLogin = () => {
     unknown
   >({
     mutationFn: (loginData: LoginData) => performLogin(loginData),
+  });
+};
+
+/**
+ * ==========================
+ * FILES MUTATOR
+ * ==========================
+ */
+export const useUploadFile = () => {
+  return useMutation<Thumbnail[], AxiosError<ErrorResponse>, FormData>({
+    mutationFn: (data: FormData) => uploadFile(data),
   });
 };
 
@@ -73,5 +92,49 @@ export const useDeleteCategory = () => {
     DeleteCategoryParams
   >({
     mutationFn: ({ id }: DeleteCategoryParams) => deleteCategory(id),
+  });
+};
+
+/**
+ * ==========================
+ * PRODUCTS MUTATOR
+ * ==========================
+ */
+export const useCreateProduct = () => {
+  return useMutation<
+    JsonResource<IProduct>,
+    AxiosError<ErrorResponse>,
+    ProductRequest
+  >({
+    mutationFn: (data: ProductRequest) => createProduct(data),
+  });
+};
+
+interface UpdateProductParams {
+  id: string;
+  data: ProductRequest;
+}
+
+export const useUpdateProduct = () => {
+  return useMutation<
+    JsonResource<IProduct>,
+    AxiosError<ErrorResponse>,
+    UpdateProductParams
+  >({
+    mutationFn: ({ id, data }: UpdateProductParams) => updateProduct(id, data),
+  });
+};
+
+interface DeleteProductParams {
+  id: string;
+}
+
+export const useDeleteProduct = () => {
+  return useMutation<
+    JsonResource<IProduct>,
+    AxiosError<ErrorResponse>,
+    DeleteProductParams
+  >({
+    mutationFn: ({ id }: DeleteProductParams) => deleteProduct(id),
   });
 };
