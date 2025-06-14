@@ -1,25 +1,26 @@
+import { IOrder } from "src/config/services/orders.service";
 import InfoTable from "../atoms/InfoTable";
 
-export default function CustomerInfo() {
+export default function CustomerInfo({ order }: { order?: IOrder }) {
   return (
     <InfoTable
       name="customer-info"
       items={[
         {
           label: "Table",
-          value: "John Doe",
+          value: order?.table_no || "N/A",
         },
         {
           label: "Name",
-          value: "John Doe",
+          value: order?.customer_name || "N/A",
         },
         {
           label: "Phone",
-          value: "John Doe",
+          value: order?.customer_phone || "N/A",
         },
         {
           label: "Additional Notes",
-          value: "John Doe",
+          value: order?.order_notes || "N/A",
         },
       ]}
     />

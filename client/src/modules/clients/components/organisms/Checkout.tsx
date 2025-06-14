@@ -4,8 +4,31 @@ import DataLabel from "src/components/atoms/DataLabel";
 import IcCustomer from "src/assets/icons/IcCustomer";
 import FormInput from "src/components/atoms/FormInput";
 import CustomSelect from "src/components/atoms/CustomSelect";
+import { useCart } from "./use-cart";
+import { formatCurrency } from "src/utils/currency";
+import { useCheckoutForm } from "./use-checkout-form";
+import { ICheckoutResponse } from "src/config/services/orders.service";
 
-export default function Checkout() {
+export default function Checkout({
+  onCheckoutSuccess,
+}: {
+  onCheckoutSuccess?: (response: ICheckoutResponse) => void;
+}) {
+  const { getSubtotal, getTax, getTotal } = useCart();
+
+  const {
+    values,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    errors,
+    touched,
+    isLoading,
+    setFieldValue,
+  } = useCheckoutForm({
+    onCheckoutSuccess,
+  });
+
   return (
     <div className="relative h-full">
       <div className="space-y-6">
@@ -13,13 +36,16 @@ export default function Checkout() {
           <h1 className="font-semibold text-lg">Checkout</h1>
         </div>
         <div className="space-y-4">
-          <div className="h-[300px] overflow-y-scroll">
+          <div className="h-[250px] overflow-y-scroll">
             <CheckoutItems />
           </div>
           <div className="space-y-2">
-            <DataLabel label="Sub Total" value="Rp 65.000" />
-            <DataLabel label="Tax (10%)" value="Rp 6.500" />
-            <DataLabel label="Grand Total" value="Rp 78.000" />
+            <DataLabel
+              label="Sub Total"
+              value={formatCurrency(getSubtotal())}
+            />
+            <DataLabel label="Tax (10%)" value={formatCurrency(getTax())} />
+            <DataLabel label="Grand Total" value={formatCurrency(getTotal())} />
           </div>
         </div>
         <div>
@@ -27,67 +53,79 @@ export default function Checkout() {
             <IcCustomer />
             <p className="font-semibold">Customer Detail</p>
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FormInput
+              name="table_no"
               label="No. Table"
-              value=""
-              onChange={(e) => console.log(e.target.value)}
-              onBlur={(e) => console.log(e.target.value)}
-              error=""
-              touched={false}
+              value={values.table_no}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.table_no}
+              touched={touched.table_no}
             />
             <FormInput
+              name="customer_name"
               label="Your Name"
-              value=""
-              onChange={(e) => console.log(e.target.value)}
-              onBlur={(e) => console.log(e.target.value)}
-              error=""
-              touched={false}
+              value={values.customer_name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.customer_name}
+              touched={touched.customer_name}
             />
             <FormInput
+              name="customer_phone"
               label="Your Phone"
-              value=""
-              onChange={(e) => console.log(e.target.value)}
-              onBlur={(e) => console.log(e.target.value)}
-              error=""
-              touched={false}
+              value={values.customer_phone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.customer_phone}
+              touched={touched.customer_phone}
             />
             <CustomSelect
               label="Type"
               options={[
                 {
                   label: "Dine In",
-                  value: "dine-in",
+                  value: "DINE_IN",
                 },
                 {
                   label: "Take Away",
-                  value: "take-away",
+                  value: "TAKE_AWAY",
                 },
               ]}
-              value="dine-in"
-              onChange={(value) => console.log(value)}
-              name="type"
+              value={values.order_type}
+              onChange={(value) => setFieldValue("order_type", value)}
+              name="order_type"
             />
             <FormInput
+              name="order_notes"
               label="Additional Notes"
               type="textarea"
-              value=""
-              onChange={(e) => console.log(e.target.value)}
-              onBlur={(e) => console.log(e.target.value)}
-              error=""
-              touched={false}
+              value={values.order_notes}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.order_notes}
+              touched={touched.order_notes}
             />
+            <div className="mt-5">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                variant="warning"
+                block
+              >
+                {isLoading ? "Processing..." : "Checkout"}
+              </Button>
+            </div>
           </form>
         </div>
       </div>
       <div className="mt-12 pb-12 relative">
         <label
+          id="order-placed-modal-trigger"
           htmlFor="orderPlacedModal"
           className="absolute inset-0 w-full h-full block"
         ></label>
-        <Button type="button" variant="warning" block>
-          Checkout
-        </Button>
       </div>
     </div>
   );

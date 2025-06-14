@@ -1,3 +1,4 @@
+import { IOrder } from "src/config/services/orders.service";
 import OrderTitle from "../atoms/OrderTitle";
 import CustomerInfo from "../molecules/CustomerInfo";
 import OrderInfo from "../molecules/OrderInfo";
@@ -6,6 +7,7 @@ import TotalInfo from "../molecules/TotalInfo";
 
 interface OrderDetailProps {
   column?: number;
+  order?: IOrder;
 }
 
 const Section = ({
@@ -16,7 +18,7 @@ const Section = ({
   return <div className="space-y-4">{children}</div>;
 };
 
-export default function OrderDetail({ column = 2 }: OrderDetailProps) {
+export default function OrderDetail({ column = 2, order }: OrderDetailProps) {
   let columnClassName = "";
 
   if (column === 2) {
@@ -28,17 +30,17 @@ export default function OrderDetail({ column = 2 }: OrderDetailProps) {
       <div className="space-y-6">
         <Section>
           <OrderTitle />
-          <CustomerInfo />
+          <CustomerInfo order={order} />
         </Section>
         <Section>
           <OrderTitle />
-          <OrderInfo />
+          <OrderInfo order={order} />
         </Section>
       </div>
       <Section>
         <OrderTitle />
-        <ProductDetails />
-        <TotalInfo />
+        <ProductDetails order={order} />
+        <TotalInfo order={order} />
       </Section>
     </div>
   );

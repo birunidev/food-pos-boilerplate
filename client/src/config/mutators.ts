@@ -22,6 +22,11 @@ import {
   updateProduct,
 } from "./services/product.service";
 import { uploadFile } from "./services/file.service";
+import {
+  CheckoutRequest,
+  createOrdersCheckout,
+  ICheckoutResponse,
+} from "./services/orders.service";
 
 /**
  * ==========================
@@ -136,5 +141,20 @@ export const useDeleteProduct = () => {
     DeleteProductParams
   >({
     mutationFn: ({ id }: DeleteProductParams) => deleteProduct(id),
+  });
+};
+
+/**
+ * ==========================
+ * ORDERS MUTATOR
+ * ==========================
+ */
+export const useOrdersCheckoutCreate = () => {
+  return useMutation<
+    ICheckoutResponse,
+    AxiosError<ErrorResponse>,
+    CheckoutRequest
+  >({
+    mutationFn: (data: CheckoutRequest) => createOrdersCheckout(data),
   });
 };

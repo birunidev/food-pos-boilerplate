@@ -5,6 +5,13 @@ import { ApiClient } from "../api";
 export interface GetProductParams extends PaginationParams {
   populate?: string;
   id?: string;
+  filters?: {
+    category?: {
+      id?: {
+        $eq?: string;
+      };
+    };
+  };
 }
 
 export interface ProductRequest {

@@ -1,16 +1,19 @@
-interface CategoryItemProps {
-  name: string;
-  emoji: string;
-  isActive: boolean;
-}
+import { ICategory } from "src/types/category.types";
 
 export default function CategoryItem({
-  emoji,
-  name,
+  category: { name, emoji },
   isActive,
-}: CategoryItemProps) {
+  onClick,
+}: {
+  isActive: boolean;
+  onClick: () => void;
+  category: ICategory;
+}) {
   return (
-    <button className={`btn-category ${isActive ? "active" : ""}`}>
+    <button
+      onClick={onClick}
+      className={`btn-category ${isActive ? "active" : ""}`}
+    >
       <span>{emoji}</span>
       <span>{name}</span>
     </button>

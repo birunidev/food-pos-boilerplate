@@ -5,17 +5,21 @@ import {
   PaginatedResources,
   useProducts,
 } from "src/config/queries";
-import { getProducts } from "src/config/services/product.service";
+import {
+  GetProductParams,
+  getProducts,
+} from "src/config/services/product.service";
 import { IProduct } from "src/types/product.types";
 
 const PAGE_SIZE = 7;
-export const useProductsLiveData = () => {
+export const useProductsLiveData = (params?: GetProductParams) => {
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   const { data: productsData, isLoading } = useProducts({
     params: {
       populate: "*",
       pagination: { pageSize: PAGE_SIZE },
+      ...params,
     },
   });
 
@@ -26,10 +30,11 @@ export const useProductsLiveData = () => {
       populate: "*",
     });
 
-    queryClient.setQueryData(
+    await queryClient.setQueryData(
       getProductsQueryKey({
         pagination: { pageSize: PAGE_SIZE },
         populate: "*",
+        ...params,
       }),
       (oldData: PaginatedResources<IProduct>) => ({
         ...oldData,

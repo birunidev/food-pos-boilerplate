@@ -6,6 +6,7 @@ interface ButtonProps {
   outline?: boolean;
   size?: "sm" | "md" | "lg" | undefined;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const variantMapper: Record<ButtonProps["variant"], string> = {
@@ -34,11 +35,13 @@ const Button = ({
   variant = "primary",
   outline = false,
   size = "md",
+  disabled = false,
 }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
       type={type}
+      disabled={disabled}
       className={[
         variantMapper[variant],
         sizeMapper[size],

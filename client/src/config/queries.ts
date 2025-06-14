@@ -17,6 +17,12 @@ import {
   getProducts,
 } from "./services/product.service";
 import { IProduct } from "src/types/product.types";
+import {
+  getOrder,
+  GetOrderParams,
+  getOrders,
+  IOrder,
+} from "./services/orders.service";
 
 export interface PaginatedResources<T> {
   data: T[];
@@ -108,6 +114,32 @@ export const useProduct = (options?: QueryOptions<GetProductParams>) => {
   return useQuery<JsonResource<IProduct>, AxiosError<ErrorResponse>>({
     queryKey: ["/products/" + options.params.id],
     queryFn: () => getProduct(options.params.id, options?.params),
+    ...options?.config,
+  });
+};
+
+/**
+ * ==========================
+ * ORDER QUERIES
+ * ==========================
+ */
+
+export const getOrdersByKey = (params?: GetOrderParams) => {
+  return ["/orders", params];
+};
+
+export const useOrders = (options?: QueryOptions<GetOrderParams>) => {
+  return useQuery<PaginatedResources<IOrder>, AxiosError<ErrorResponse>>({
+    queryKey: getOrdersByKey(options?.params),
+    queryFn: () => getOrders(options?.params),
+    ...options?.config,
+  });
+};
+
+export const useOrder = (options?: QueryOptions<GetOrderParams>) => {
+  return useQuery<JsonResource<IOrder>, AxiosError<ErrorResponse>>({
+    queryKey: ["/orders/" + options.params?.id],
+    queryFn: () => getOrder(options.params?.id, options?.params),
     ...options?.config,
   });
 };

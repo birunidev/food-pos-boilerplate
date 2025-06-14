@@ -17,7 +17,7 @@ interface OrderRequestData {
   customer_email: string;
   order_type: "DINE_IN" | "TAKE_AWAY";
   order_notes: string;
-  table_no: number;
+  table_no: string;
   order_items: OrderItemRequestData[];
   qris_url: string;
 }
@@ -78,7 +78,7 @@ export default factories.createCoreController(
           return {
             product_title: product.title,
             product_price: product.price,
-            product_thumbnail: product.thumbnail,
+            product_thumbnail: product.thumbnail.url,
             quantity: orderedItem.quantity,
             subtotal: product.price * orderedItem.quantity,
           };
@@ -100,10 +100,12 @@ export default factories.createCoreController(
 
         const { order_items, ...requestData } = data;
 
+        console.log("ordered_items", orderedItems);
+
         // create order
         const payload: any = {
           ...requestData,
-          order_items: orderedItems,
+          ordered_items: orderedItems,
           subtotal,
           tax,
           grand_total: total,

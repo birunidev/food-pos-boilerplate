@@ -1,6 +1,6 @@
 interface Info {
   label: string;
-  value: string | number | JSX.Element;
+  value: string | number | React.ReactNode;
   valueClassName?: string;
 }
 
