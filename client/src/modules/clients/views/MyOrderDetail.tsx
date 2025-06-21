@@ -3,9 +3,21 @@ import BaseTemplate from "../components/templates/BaseTemplate";
 import { IconArrowLeft } from "@tabler/icons-react";
 import Box from "src/components/atoms/Box";
 import OrderNo from "src/components/atoms/OrderNo";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useOrder } from "src/config/queries";
+import Modal from "../components/atoms/Modal";
+import OrderReceipt from "src/components/templates/OrderReceipt";
+import OrderPlaced from "src/components/templates/OrderPlaced";
 
 export default function MyOrderDetail() {
+  const { id } = useParams();
+
+  const { data: orderData } = useOrder({
+    params: { id: id, populate: "*" },
+    config: { enabled: !!id },
+  });
+
+  const hasPaid = orderData?.data?.payment_status === "paid";
   return (
     <BaseTemplate>
       <div className="space-y-4 2xl:space-y-6 custom-container">
@@ -20,15 +32,29 @@ export default function MyOrderDetail() {
             Detail Order
           </h1>
           <div className="flex items-center gap-4">
-            <button className="btn btn-warning">Download E-Receipt</button>
-            <button className="btn btn-error">Finish Payment</button>
+            {hasPaid && (
+              <label htmlFor="order-receipt-modal" className="btn btn-warning">
+                Download E-Receipt
+              </label>
+            )}
+            {!hasPaid && (
+              <label htmlFor="order-placed-modal" className="btn btn-error">
+                Finish Payment
+              </label>
+            )}
           </div>
         </div>
         <Box>
-          <OrderNo />
-          <OrderDetail column={2} />
+          <OrderNo order={orderData?.data} />
+          <OrderDetail column={2} order={orderData?.data} />
         </Box>
       </div>
+      <Modal id="order-receipt-modal">
+        <OrderReceipt order={orderData?.data} />
+      </Modal>
+      <Modal id="order-placed-modal">
+        <OrderPlaced orderId={orderData?.data.documentId} />
+      </Modal>
     </BaseTemplate>
   );
 }

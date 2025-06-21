@@ -1,18 +1,15 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import adminRoutes from "./modules/admin/router";
 import authRoutes from "./modules/auth/router";
 import clientRoutes from "./modules/clients/router";
 import { ProtectedRoute } from "./components/atoms/ProtectedRoute";
 import { RestrictedRoute } from "./components/atoms/RestrictedRoute";
+import { ClientProtectedRoute } from "./components/atoms/ClientProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <>
-        <Outlet />
-      </>
-    ),
+    element: <ClientProtectedRoute />,
     children: [...clientRoutes],
   },
   {

@@ -1,25 +1,29 @@
 import FormInput from "src/components/atoms/FormInput";
 
-export default function OrderFilter() {
+export default function OrderFilter({
+  values,
+  onChange,
+}: {
+  values: { date_from: string; date_to: string };
+  onChange: (name: string, value: string) => void;
+}) {
   return (
     <div className="flex flex-col md:flex-row items-center max-w-md gap-3">
       <FormInput
         label="From"
         type="date"
-        value=""
-        onChange={(e) => console.log(e.target.value)}
-        onBlur={(e) => console.log(e.target.value)}
-        error=""
-        touched={false}
+        name="date_from"
+        value={values.date_from}
+        onChange={(e) => onChange("date_from", e.target.value)}
+        onBlur={(e) => onChange("date_from", e.target.value)}
       />
       <FormInput
         label="To"
         type="date"
-        value=""
-        onChange={(e) => console.log(e.target.value)}
-        onBlur={(e) => console.log(e.target.value)}
-        error=""
-        touched={false}
+        name="date_to"
+        value={values.date_to}
+        onChange={(e) => onChange("date_to", e.target.value)}
+        onBlur={(e) => onChange("date_to", e.target.value)}
       />
     </div>
   );

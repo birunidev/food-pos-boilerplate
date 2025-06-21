@@ -66,6 +66,13 @@ body {
   @apply bg-[#FFF1F1] border-[#FFF1F1] text-primary font-medium;
 }
 
+.badge-complete {
+  @apply bg-[#F1FFF1] border-[#F1FFF1] text-[#00C500] font-medium;
+}
+.badge-processing {
+  @apply bg-[#FFF3E6] border-[#FFF3E6] text-[#F28F2D] font-medium;
+}
+
 .info-table {
   @apply w-full;
 }

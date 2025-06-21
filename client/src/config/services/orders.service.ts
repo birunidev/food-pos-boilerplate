@@ -50,6 +50,28 @@ export interface IOrder {
   ordered_items: OrderedItem[];
 }
 
+export interface MidtransTransactionResponse {
+  status_code: string;
+  transaction_id: string;
+  gross_amount: string;
+  currency: string;
+  order_id: string;
+  payment_type: string;
+  signature_key: string;
+  transaction_status: string;
+  fraud_status: string;
+  status_message: string;
+  merchant_id: string;
+  transaction_type: string;
+  issuer: string;
+  acquirer: string;
+  reference_id: string;
+  shopeepay_reference_number: string;
+  transaction_time: string;
+  settlement_time: string;
+  expiry_time: string;
+}
+
 export interface ICheckoutResponse extends IOrder {
   midtrans: {
     status_code: string;
@@ -78,6 +100,15 @@ export interface ICheckoutResponse extends IOrder {
 export interface GetOrderParams {
   populate?: string;
   id?: string;
+  filters?: {
+    customer_phone?: {
+      $eq?: string;
+    };
+    order_date?: {
+      $gte?: string;
+      $lte?: string;
+    };
+  };
 }
 
 export const getOrders = (params: GetOrderParams) =>
@@ -100,5 +131,39 @@ export const createOrdersCheckout = (data: CheckoutRequest) =>
     url: "/orders/checkout",
     data: {
       ...data,
+    },
+  });
+export interface TransactionWebhookResponse {
+  message: string;
+  success: boolean;
+  data: IOrder;
+}
+
+export const getTransactionStatus = (midtransTransactionId: string) =>
+  ApiClient<TransactionWebhookResponse>({
+    method: "POST",
+    url: "/orders/webhook",
+    data: {
+      midtrans_transaction_id: midtransTransactionId,
+    },
+  });
+
+export interface UpdateOrderRequest {
+  order_status:
+    | "pending_payment"
+    | "processing"
+    | "completed"
+    | "cancelled"
+    | "ready_to_serve";
+}
+
+export const updateOrder = (id: string, data: UpdateOrderRequest) =>
+  ApiClient<JsonResource<IOrder>>({
+    method: "PUT",
+    url: `/orders/${id}`,
+    data: {
+      data: {
+        order_status: data.order_status,
+      },
     },
   });

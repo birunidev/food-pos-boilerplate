@@ -13,6 +13,7 @@ interface FormInputProps {
   inputClassName?: string;
   leftIcon?: React.ReactNode;
   name: string;
+  disabled?: boolean;
 }
 
 export default function FormInput({
@@ -28,6 +29,7 @@ export default function FormInput({
   leftIcon,
   type = "text",
   name,
+  disabled,
 }: FormInputProps) {
   return (
     <label className={`form-control w-full ${wrapperClassName}`}>
@@ -46,6 +48,7 @@ export default function FormInput({
             onChange={onChange}
             onBlur={onBlur}
             name={name}
+            disabled={disabled}
             className={`textarea textarea-bordered w-full ${inputClassName}`}
           ></textarea>
         ) : (
@@ -53,6 +56,7 @@ export default function FormInput({
             type={type}
             value={value}
             onChange={onChange}
+            disabled={disabled}
             onBlur={onBlur}
             name={name}
             placeholder="Type here"

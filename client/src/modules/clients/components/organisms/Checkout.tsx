@@ -77,9 +77,8 @@ export default function Checkout({
               label="Your Phone"
               value={values.customer_phone}
               onChange={handleChange}
+              disabled={true}
               onBlur={handleBlur}
-              error={errors.customer_phone}
-              touched={touched.customer_phone}
             />
             <CustomSelect
               label="Type"

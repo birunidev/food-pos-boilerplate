@@ -25,7 +25,12 @@ import { uploadFile } from "./services/file.service";
 import {
   CheckoutRequest,
   createOrdersCheckout,
+  getTransactionStatus,
   ICheckoutResponse,
+  IOrder,
+  TransactionWebhookResponse,
+  updateOrder,
+  UpdateOrderRequest,
 } from "./services/orders.service";
 
 /**
@@ -156,5 +161,31 @@ export const useOrdersCheckoutCreate = () => {
     CheckoutRequest
   >({
     mutationFn: (data: CheckoutRequest) => createOrdersCheckout(data),
+  });
+};
+
+export const useOrdersWebhook = () => {
+  return useMutation<
+    TransactionWebhookResponse,
+    AxiosError<ErrorResponse>,
+    { midtransTransactionId: string }
+  >({
+    mutationFn: (data: { midtransTransactionId: string }) =>
+      getTransactionStatus(data.midtransTransactionId),
+  });
+};
+
+interface UpdateOrderParams {
+  id: string;
+  data: UpdateOrderRequest;
+}
+
+export const useUpdateOrder = () => {
+  return useMutation<
+    JsonResource<IOrder>,
+    AxiosError<ErrorResponse>,
+    UpdateOrderParams
+  >({
+    mutationFn: ({ id, data }: UpdateOrderParams) => updateOrder(id, data),
   });
 };

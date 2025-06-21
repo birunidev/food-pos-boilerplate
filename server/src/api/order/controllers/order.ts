@@ -201,7 +201,11 @@ export default factories.createCoreController(
       }
       // check if payment status is success, if success, then ignore with status 200
       if (order.order_status !== "pending_payment") {
-        return { success: true, message: "Order already processed" };
+        return {
+          success: true,
+          message: "Order already processed",
+          data: order,
+        };
       }
 
       const transactionStatus = result.transaction_status;
@@ -222,21 +226,24 @@ export default factories.createCoreController(
       }
 
       // update table order with latest payment status and order status, paid_at, payment_log
-      await strapi.db.query("api::order.order").update({
-        where: {
-          id: order.id,
-        },
-        data: {
-          order_status,
-          payment_status,
-          payment_log: JSON.stringify(result),
-          paid_at,
-        },
-      });
+      const orderUpdateResponse = await strapi.db
+        .query("api::order.order")
+        .update({
+          where: {
+            id: order.id,
+          },
+          data: {
+            order_status,
+            payment_status,
+            payment_log: JSON.stringify(result),
+            paid_at,
+          },
+        });
 
       return {
         message: "webhook received",
         sucess: true,
+        data: orderUpdateResponse,
       };
     },
   })

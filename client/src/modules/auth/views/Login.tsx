@@ -1,7 +1,10 @@
 import FormInput from "../../../components/atoms/FormInput";
 import AuthWrapper from "../components/organisms/AuthWrapper";
+import { useClientLoginForm } from "./use-client-login-form";
 
 export default function Login() {
+  const { values, errors, handleSubmit, handleChange, handleBlur, touched } =
+    useClientLoginForm();
   return (
     <AuthWrapper>
       <div className="space-y-6 lg:space-y-12">
@@ -11,14 +14,16 @@ export default function Login() {
             Taste various food and beverages! Increase your mood
           </p>
         </div>
-        <form action="/" className="space-y-3 lg:space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-6">
           <FormInput
             label="Your Mobile Phone"
             type="text"
-            value=""
+            value={values.phone}
             name="phone"
-            onChange={() => {}}
-            onBlur={() => {}}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.phone}
+            touched={touched.phone}
             leftIcon={<img src="/assets/icons/ic-phone.svg" alt="" />}
           />
 

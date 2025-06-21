@@ -29,16 +29,16 @@ export default function OrderDetail({ column = 2, order }: OrderDetailProps) {
     <div className={`grid grid-cols-1 gap-10 ${columnClassName}`}>
       <div className="space-y-6">
         <Section>
-          <OrderTitle />
+          <OrderTitle title="Customer Information" />
           <CustomerInfo order={order} />
         </Section>
         <Section>
-          <OrderTitle />
+          <OrderTitle title="Order Information" />
           <OrderInfo order={order} />
         </Section>
       </div>
       <Section>
-        <OrderTitle />
+        <OrderTitle title="Product Details" />
         <ProductDetails order={order} />
         <TotalInfo order={order} />
       </Section>

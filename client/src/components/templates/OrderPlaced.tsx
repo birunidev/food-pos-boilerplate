@@ -4,10 +4,12 @@ import OrderDetail from "../organisms/OrderDetail";
 import OrderHead from "../organisms/OrderHead";
 import toggleCartState from "src/recoil/toggleCart";
 import { useOrder } from "src/config/queries";
+import { useOrdersWebhook } from "src/config/mutators";
+import { useEffect } from "react";
 
 export default function OrderPlaced({ orderId }: { orderId?: string }) {
   const [, setOpenCart] = useRecoilState(toggleCartState);
-  const { data } = useOrder({
+  const { data: orderData } = useOrder({
     config: {
       enabled: !!orderId,
     },
@@ -17,12 +19,34 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
     },
   });
 
-  console.log(data);
+  const { mutateAsync: performOrderWebhook, data: webhookData } =
+    useOrdersWebhook();
+  const hasPaid = webhookData?.data?.payment_status === "paid";
+
+  // const transactionStatus = midtransData?.transaction_status;
+  // const hasPaid = transactionStatus === "settlement";
+  useEffect(() => {
+    let interval = null;
+    if (orderData?.data && !hasPaid) {
+      interval = setInterval(() => {
+        performOrderWebhook({
+          midtransTransactionId: orderData?.data?.midtrans_transaction_id,
+        });
+      }, 2000);
+    }
+
+    // Cleanup interval on component unmount
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderData?.data, hasPaid]);
 
   return (
     <div className="space-y-12">
-      <OrderHead order={data?.data} />
-      <OrderDetail column={1} order={data?.data} />
+      <OrderHead hasPaid={hasPaid} order={orderData?.data} />
+      <OrderDetail column={1} order={orderData?.data} />
       <div className="relative">
         <label
           onClick={() => setOpenCart(false)}

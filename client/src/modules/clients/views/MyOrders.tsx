@@ -2,8 +2,22 @@ import BaseTemplate from "../components/templates/BaseTemplate";
 import OrderCards from "src/components/organisms/OrderCards";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import { useOrders } from "src/config/queries";
+import { useRecoilState } from "recoil";
+import clientAuthState from "src/recoil/clientAuth";
 
 export default function MyOrders() {
+  const [storedAuthPhone] = useRecoilState(clientAuthState);
+  const { data: orderData } = useOrders({
+    params: {
+      filters: {
+        customer_phone: {
+          $eq: storedAuthPhone,
+        },
+      },
+    },
+  });
+
   return (
     <BaseTemplate>
       <div className="space-y-4 2xl:space-y-6 custom-container">
@@ -18,7 +32,7 @@ export default function MyOrders() {
             My Orders
           </h1>
         </div>
-        <OrderCards />
+        <OrderCards orders={orderData?.data} />
       </div>
     </BaseTemplate>
   );

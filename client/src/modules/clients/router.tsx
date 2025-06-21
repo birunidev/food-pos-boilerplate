@@ -13,7 +13,7 @@ const clientRoutes: RouteObject[] = [
     element: <MyOrders />,
   },
   {
-    path: "my-orders/:code",
+    path: "my-orders/:id",
     element: <MyOrderDetail />,
   },
 ];

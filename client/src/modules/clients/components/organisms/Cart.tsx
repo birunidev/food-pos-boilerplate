@@ -12,8 +12,7 @@ import { formatCurrency } from "src/utils/currency";
 
 export default function Cart() {
   const [openCart, setOpenCart] = useRecoilState(toggleCartState);
-  const { getSubtotal } = useCart();
-  const [step, setStep] = useState<number>(1);
+  const { getSubtotal, step, setStep } = useCart();
   const { cart } = useCart();
   const [orderId, setOrderId] = useState<string>("");
 
@@ -25,7 +24,7 @@ export default function Cart() {
         openCart ? "right-0" : "right-[-100%]",
       ].join(" ")}
     >
-      {step === 2 ? (
+      {step === 2 && cart.length > 0 ? (
         <Checkout
           onCheckoutSuccess={(response) => setOrderId(response.documentId)}
         />

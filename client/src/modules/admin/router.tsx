@@ -32,7 +32,7 @@ const adminRoutes: RouteObject[] = [
     element: <OrderIndex />,
   },
   {
-    path: "orders/:code",
+    path: "orders/:id",
     element: <OrderShow />,
   },
 ];

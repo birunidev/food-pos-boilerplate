@@ -1,8 +1,13 @@
+import { useLocalStorage } from "react-use";
 import { useRecoilState } from "recoil";
 import cartState from "src/recoil/cart";
+import cartStepState from "src/recoil/cartStep";
 
 export const useCart = () => {
+  const [step, setStep] = useRecoilState(cartStepState);
+
   const [cart, setCart] = useRecoilState(cartState);
+  const [, , removeCart] = useLocalStorage("FP__CART");
 
   const getSubtotal = () => {
     return cart.reduce((total, item) => {
@@ -24,5 +29,21 @@ export const useCart = () => {
       quantity: item.quantity,
     })) || [];
 
-  return { getSubtotal, getTax, cart, setCart, getTotal, cartReadyToCheckout };
+  const resetCart = () => {
+    setCart([]);
+    removeCart();
+    setStep(1);
+  };
+
+  return {
+    getSubtotal,
+    getTax,
+    cart,
+    setCart,
+    getTotal,
+    cartReadyToCheckout,
+    resetCart,
+    step,
+    setStep,
+  };
 };

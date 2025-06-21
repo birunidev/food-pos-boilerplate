@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  strapi-food-pos-prod:
+    container_name: strapi-food-pos-prod
+    build:
+      context: ../
+      dockerfile: ./prod/Dockerfile
+    image: strapi-food-pos:latest
+    env_file: ../.env.production
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PORT: ${DATABASE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
+      MIDTRANS_BASE_URL: ${MIDTRANS_BASE_URL}
+    volumes:
+      - ../public/uploads:/opt/app/public/uploads
+    ports:
+      - "1337:1337"
+    restart: unless-stopped
+    networks:
+      - strapi-food-pos-prod
+    depends_on:
+      strapi-food-posdb-prod:
+        condition: service_healthy
+
+  strapi-food-posdb-prod:
+    container_name: strapi-food-posdb-prod
+    platform: linux/amd64
+    env_file: ../.env.production
+    image: mysql:8.0
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+      --max-connections=200
+      --innodb-flush-log-at-trx-commit=1
+      --innodb-log-file-size=256M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - data:/var/lib/mysql
+    expose:
+      - "3306"
+    restart: unless-stopped
+    networks:
+      - strapi-food-pos-prod
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${DATABASE_PASSWORD}",
+        ]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+
+  strapi-food-posAdminer-prod:
+    container_name: strapi-food-posAdminer-prod
+    image: adminer
+    ports:
+      - "9090:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=strapi-food-posdb-prod
+    restart: unless-stopped
+    networks:
+      - strapi-food-pos-prod
+    depends_on:
+      - strapi-food-posdb-prod
+
+volumes:
+  data:
+
+networks:
+  strapi-food-pos-prod:
+    name: strapi-food-pos-prod
+    driver: bridge
