@@ -51,10 +51,11 @@ services:
       MYSQL_USER: ${DATABASE_USERNAME}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_ROOT_HOST: "%"
+      MYSQL_TCP_PORT: 3309
     volumes:
       - data:/var/lib/mysql
-    expose:
-      - "3306"
+    ports:
+      - "3309:3309"
     restart: unless-stopped
     networks:
       - strapi-food-pos-prod
