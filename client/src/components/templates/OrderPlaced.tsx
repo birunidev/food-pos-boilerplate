@@ -21,6 +21,7 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
 
   const { mutateAsync: performOrderWebhook, data: webhookData } =
     useOrdersWebhook();
+
   const hasPaid = webhookData?.data?.payment_status === "paid";
 
   // const transactionStatus = midtransData?.transaction_status;
@@ -31,7 +32,7 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
       interval = setInterval(() => {
         performOrderWebhook({
           midtransTransactionId: orderData?.data?.midtrans_transaction_id,
-        });
+        }).then(() => {});
       }, 2000);
     }
 
@@ -42,6 +43,12 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderData?.data, hasPaid]);
+
+  useEffect(() => {
+    if (hasPaid) {
+      window.location.href = "/my-orders";
+    }
+  }, [hasPaid]);
 
   return (
     <div className="space-y-12">

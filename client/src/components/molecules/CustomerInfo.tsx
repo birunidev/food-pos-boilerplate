@@ -15,6 +15,10 @@ export default function CustomerInfo({ order }: { order?: IOrder }) {
           value: order?.customer_name || "N/A",
         },
         {
+          label: "Email",
+          value: order?.customer_email || "N/A",
+        },
+        {
           label: "Phone",
           value: order?.customer_phone || "N/A",
         },

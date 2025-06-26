@@ -7278,6 +7278,11 @@ nodemailer-shared@1.1.0:
   dependencies:
     nodemailer-fetch "1.6.0"
 
+nodemailer@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.npmjs.org/nodemailer/-/nodemailer-7.0.3.tgz"
+  integrity sha512-Ajq6Sz1x7cIK3pN6KesGTah+1gnwMnx5gKl3piQlQQE/PwyJ4Mbc8is2psWYxK3RJTVeqsDaCv8ZzXLCDHMTZw==
+
 nodemon@3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/nodemon/-/nodemon-3.0.2.tgz"

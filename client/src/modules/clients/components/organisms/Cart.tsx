@@ -19,7 +19,7 @@ export default function Cart() {
   return (
     <div
       className={[
-        "fixed top-0 transition-all w-full h-screen bg-white z-[50] p-2 cart",
+        "fixed top-0 transition-all w-full h-screen overflow-y-scroll bg-white z-[50] p-2 cart",
         "md:max-w-[300px] xl:max-w-[300px] xl:right-0 border-l border-gray-100 xl:max-w-[400px] ",
         openCart ? "right-0" : "right-[-100%]",
       ].join(" ")}

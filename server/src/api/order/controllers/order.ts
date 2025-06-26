@@ -5,6 +5,8 @@
 import { factories } from "@strapi/strapi";
 import { createMidtransTransaction } from "../../../services/midtrans";
 import { midtransBaseUrl } from "../../../constants";
+import nodemailer from "nodemailer";
+import { getOrderPaidEmailTemplate, IOrder } from "../../../emails/order-paid";
 
 interface OrderItemRequestData {
   product_id: number;
@@ -239,6 +241,33 @@ export default factories.createCoreController(
             paid_at,
           },
         });
+
+      // send email to customer
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const latestOrderData = await strapi
+        .documents("api::order.order")
+        .findOne({
+          documentId: orderUpdateResponse.documentId,
+          populate: {
+            ordered_items: true,
+          },
+        });
+
+      await transporter.sendMail({
+        from: "My Food <admin@strapi_pos.com>",
+        to: order.customer_email,
+        subject: `E Receipt for Order #${latestOrderData.order_code}`,
+        html: getOrderPaidEmailTemplate({ order: latestOrderData as IOrder }),
+      });
 
       return {
         message: "webhook received",

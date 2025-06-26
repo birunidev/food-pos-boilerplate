@@ -73,6 +73,15 @@ export default function Checkout({
               touched={touched.customer_name}
             />
             <FormInput
+              name="customer_email"
+              label="Your Email"
+              value={values.customer_email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.customer_email}
+              touched={touched.customer_email}
+            />
+            <FormInput
               name="customer_phone"
               label="Your Phone"
               value={values.customer_phone}
