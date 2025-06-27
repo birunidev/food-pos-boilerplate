@@ -38,7 +38,7 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
               response.data.payment_status === "paid" ||
               response.data.order_status === "cancelled"
             ) {
-              window.location.href = "/my-orders";
+              // window.location.href = "/my-orders";
             }
           });
         }, 2000);

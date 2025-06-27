@@ -261,13 +261,18 @@ export default factories.createCoreController(
             ordered_items: true,
           },
         });
-
-      await transporter.sendMail({
-        from: "My Food <admin@strapi_pos.com>",
-        to: order.customer_email,
-        subject: `E Receipt for Order #${latestOrderData.order_code}`,
-        html: getOrderPaidEmailTemplate({ order: latestOrderData as IOrder }),
-      });
+      console.log(transactionStatus);
+      if (
+        order.order_status == "pending_payment" &&
+        transactionStatus == "settlement"
+      ) {
+        await transporter.sendMail({
+          from: "My Food <admin@strapi_pos.com>",
+          to: order.customer_email,
+          subject: `E Receipt for Order #${latestOrderData.order_code}`,
+          html: getOrderPaidEmailTemplate({ order: latestOrderData as IOrder }),
+        });
+      }
 
       return {
         message: "webhook received",
