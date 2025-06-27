@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 export default function OrderPlaced({ orderId }: { orderId?: string }) {
   const [, setOpenCart] = useRecoilState(toggleCartState);
-  const { data: orderData } = useOrder({
+  const { data: orderData, isLoading } = useOrder({
     config: {
       enabled: !!orderId,
     },
@@ -19,21 +19,30 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
     },
   });
 
-  const { mutateAsync: performOrderWebhook, data: webhookData } =
-    useOrdersWebhook();
+  const { mutateAsync: performOrderWebhook } = useOrdersWebhook();
 
-  const hasPaid = webhookData?.data?.payment_status === "paid";
+  const isPendingPayment = orderData?.data?.order_status === "pending_payment";
 
   // const transactionStatus = midtransData?.transaction_status;
   // const hasPaid = transactionStatus === "settlement";
   useEffect(() => {
     let interval = null;
-    if (orderData?.data && !hasPaid) {
-      interval = setInterval(() => {
-        performOrderWebhook({
-          midtransTransactionId: orderData?.data?.midtrans_transaction_id,
-        }).then(() => {});
-      }, 2000);
+    if (!isLoading) {
+      if (orderData?.data && isPendingPayment) {
+        interval = setInterval(() => {
+          performOrderWebhook({
+            midtransTransactionId: orderData?.data?.midtrans_transaction_id,
+          }).then((response) => {
+            console.log(response);
+            if (
+              response.data.payment_status === "paid" ||
+              response.data.order_status === "cancelled"
+            ) {
+              window.location.href = "/my-orders";
+            }
+          });
+        }, 2000);
+      }
     }
 
     // Cleanup interval on component unmount
@@ -42,17 +51,11 @@ export default function OrderPlaced({ orderId }: { orderId?: string }) {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderData?.data, hasPaid]);
-
-  useEffect(() => {
-    if (hasPaid) {
-      window.location.href = "/my-orders";
-    }
-  }, [hasPaid]);
+  }, [orderData?.data, isPendingPayment]);
 
   return (
     <div className="space-y-12">
-      <OrderHead hasPaid={hasPaid} order={orderData?.data} />
+      <OrderHead hasPaid={!isPendingPayment} order={orderData?.data} />
       <OrderDetail column={1} order={orderData?.data} />
       <div className="relative">
         <label

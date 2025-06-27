@@ -18,6 +18,7 @@ export default function MyOrderDetail() {
   });
 
   const hasPaid = orderData?.data?.payment_status === "paid";
+  const hasCancelled = orderData?.data?.order_status === "cancelled";
   return (
     <BaseTemplate>
       <div className="space-y-4 2xl:space-y-6 custom-container">
@@ -37,7 +38,7 @@ export default function MyOrderDetail() {
                 Download E-Receipt
               </label>
             )}
-            {!hasPaid && (
+            {!hasPaid && !hasCancelled && (
               <label htmlFor="order-placed-modal" className="btn btn-error">
                 Finish Payment
               </label>
