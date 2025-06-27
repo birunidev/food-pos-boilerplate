@@ -21,6 +21,7 @@ services:
       MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY}
       MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY}
       MIDTRANS_BASE_URL: ${MIDTRANS_BASE_URL}
+      BASE_URL: ${BASE_URL}
     volumes:
       - ../config:/opt/app/config
       - ../src:/opt/app/src

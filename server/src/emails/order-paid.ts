@@ -43,6 +43,7 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const getOrderPaidEmailTemplate = ({ order }: { order: IOrder }) => {
+  const BASE_URL = process.env.BASE_URL || "http://localhost:1337";
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -91,7 +92,7 @@ export const getOrderPaidEmailTemplate = ({ order }: { order: IOrder }) => {
                   .map(
                     (item) => `<tr>
                     <td width="50">
-                      <img src="${item.product_thumbnail}" width="50" height="50" alt="Spinach" style="display:block;" />
+                      <img src="${BASE_URL}${item.product_thumbnail}" width="50" height="50" alt="Spinach" style="display:block;" />
                     </td>
                     <td style="padding-left: 10px;">${item.product_title} – ${item.quantity}x</td>
                     <td align="right">${formatCurrency(item.subtotal)}</td>
